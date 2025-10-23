@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.name}">Product</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{frontend/header :: header}"></div>
+    <main class="container">
+        <a href="/products" class="back-link">Back to Products</a>
+        <div class="product-detail">
+            <div class="product-details-section">
+                <span class="product-category-badge" th:text="${product.category}"></span>
+                <h1 class="product-title" th:text="${product.name}"></h1>
+                <div class="product-price-large" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></div>
+                <p class="product-description-full" th:text="${product.description}"></p>
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Product ID:</span>
+                        <span th:text="${product.id}"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Category:</span>
+                        <span th:text="${product.category}"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Availability:</span>
+                        <span class="stock-badge-large" th:classappend="${product.inStock} ? 'in-stock' : 'out-of-stock'" th:text="${product.inStock} ? 'In Stock' : 'Out of Stock'"></span>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-edit">Edit Product</a>
+                    <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" style="flex: 1;">
+                        <button type="submit" class="btn btn-delete" style="width: 100%;" onclick="return confirm('Are you sure?')">Delete Product</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div th:replace="~{frontend/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"></head>
+<body>
+    <div th:fragment="success-alert" th:if="${message}" class="alert alert-success">
+        <span class="alert-icon">✓</span>
+        <span th:text="${message}"></span>
+    </div>
+</body>
+</html>

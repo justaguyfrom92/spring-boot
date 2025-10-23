@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="container">
+        <div th:replace="~{fragments/alerts :: success-alert}"></div>
+        <div class="filters">
+            <label for="categoryFilter">Filter by Category:</label>
+            <select id="categoryFilter" onchange="filterByCategory(this.value)">
+                <option value="">All Products</option>
+                <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}" th:selected="${cat == selectedCategory}"></option>
+            </select>
+            <span th:text="${products.size()} + ' product(s) found'"></span>
+        </div>
+        <div class="product-grid" th:if="${!products.isEmpty()}">
+            <div th:each="product : ${products}" class="product-card">
+                <img th:src="${product.imageUrl}" th:alt="${product.name}" class="product-image">
+                <div class="product-info">
+                    <div class="product-category" th:text="${product.category}"></div>
+                    <h3 class="product-name" th:text="${product.name}"></h3>
+                    <p class="product-description" th:text="${product.description}"></p>
+                    <div class="product-footer">
+                        <span class="product-price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></span>
+                        <span class="stock-badge" th:classappend="${product.inStock} ? 'in-stock' : 'out-of-stock'" th:text="${product.inStock} ? 'In Stock' : 'Out of Stock'"></span>
+                    </div>
+                    <div class="product-actions">
+                        <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-secondary btn-small">View</a>
+                        <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-edit btn-small">Edit</a>
+                        <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-delete btn-small" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="no-products" th:if="${products.isEmpty()}">
+            <h3>No products found</h3>
+        </div>
+    </main>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script>
+        function filterByCategory(category) {
+            window.location.href = category ? '/products?category=' + encodeURIComponent(category) : '/products';
+        }
+    </script>
+</body>
+</html>
